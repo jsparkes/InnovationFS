@@ -1,4 +1,3 @@
-				Icon type by card position								
 ID	Age	Color	Title	Top	Left	Middle	Right	Hexagon (info only)	Dogma Icon	Dogma Condition 1	Dogma Condition 2	Dogma Condition 3
 1	1	Yellow	Agriculture	x	Leaf	Leaf	Leaf	Sheaf of grain	Leaf	"You may return a card from your hand. If you do, draw and score a card of value one higher than the card you returned."		
 2	1	Red	Archery	Castle	Lightbulb	x	Castle	bow and arrow	Castle	"I demand you draw a 1, then transfer the highest card in your hand to my hand!"		
