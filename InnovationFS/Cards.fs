@@ -30,8 +30,8 @@ let cardData = CardData.Load("Innovation.txt")
 
 let Cards =
     cardData.Rows
-    |> List.ofSeq
-    |> List.map (fun row ->
+    |> Array.ofSeq
+    |> Array.map (fun row ->
            { id = row.ID
              age = row.Age
              color = row.Color
