@@ -135,10 +135,9 @@ let isLowestCard (id : int32) (cards : List<Card>) : bool =
     let min = getLowestCard cards
     match min with
     | None -> true // XXX is the card supposed to be in the list?
-    | Some c -> c.age =Cards.[id].age
+    | Some c -> c.age = Cards.[id].age
 
 let cardHasSymbol (id : Option<int32>) (symbol : string) : bool =
     match id with
     | None -> false
-    | Some c ->
-        Seq.contains symbol Cards[c].icons.Values
+    | Some c -> Seq.contains symbol (Cards[ c ].icons.Values)
