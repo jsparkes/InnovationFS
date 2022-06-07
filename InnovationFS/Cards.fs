@@ -9,16 +9,19 @@ module Cards
 open System
 open FSharp.Data
 
-[<CustomComparison>]
+type IconPosition =
+    | IconTop = 0
+    | IconLeft = 1
+    | IconMiddle = 2
+    | IconRight = 3
+
+[<CustomComparison; CustomEquality>]
 type Card =
     { id : int32
       age : int32
       color : string
       title : string
-      top : string
-      left : string
-      middle : string
-      right : string
+      icons : Map<IconPosition, string>
       hexagon : string
       dogmaIcon : string
       dogmaCondition1 : string
@@ -34,6 +37,16 @@ type Card =
     interface IComparable<Card> with
         member this.CompareTo other = other.id.CompareTo this.id
 
+    interface IEquatable<Card> with
+        member this.Equals other = other.id.Equals this.id
+
+    override this.Equals other =
+        match other with
+        | :? Card as c -> (this :> IEquatable<_>).Equals c
+        | _ -> false
+
+    override this.GetHashCode() = this.id.GetHashCode()
+
 type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
 let cardData = CardData.Load("Innovation.txt")
@@ -42,14 +55,17 @@ let Cards =
     cardData.Rows
     |> Array.ofSeq
     |> Array.map (fun row ->
+           let icons =
+               [ (IconPosition.IconTop, row.Top)
+                 (IconPosition.IconLeft, row.Left)
+                 (IconPosition.IconMiddle, row.Middle)
+                 (IconPosition.IconRight, row.Right) ]
+               |> Map.ofList
            { id = row.ID
              age = row.Age
              color = row.Color
              title = row.Title
-             top = row.Top
-             left = row.Left
-             middle = row.Middle
-             right = row.Right
+             icons = icons
              hexagon = row.``Hexagon (info only)``
              dogmaIcon = row.``Dogma Icon``
              dogmaCondition1 = row.``Dogma Condition 1``
@@ -68,7 +84,7 @@ let getCardById (id : int32) : Card =
         invalidArg (nameof id) "card ID is out of range"
     // Stupid starting array at zero.
     // Maybe I should use a Dictionary.
-    Cards.[ id - 1 ]
+    Cards.[id - 1]
 
 let getHighestCard (cards : List<Card>) : Option<Card> =
     match cards with
