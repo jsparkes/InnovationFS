@@ -28,13 +28,13 @@ type Card =
       dogmaCondition3 : string }
 
     interface IComparable with
-      member this.CompareTo other =
-          match other with
-          | :? Card as c -> (this :> IComparable<_>).CompareTo c
-          | _ -> -1
+        member this.CompareTo other =
+            match other with
+            | :? Card as c -> (this :> IComparable<_>).CompareTo c
+            | _ -> -1
 
     interface IComparable<Card> with
-      member this.CompareTo other = other.id.CompareTo this.id
+        member this.CompareTo other = other.id.CompareTo this.id
 
 type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
