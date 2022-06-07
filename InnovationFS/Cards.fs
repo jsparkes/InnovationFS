@@ -7,8 +7,11 @@ module Cards
 //open Android.Views
 //open Android.Widget
 
+open System
+
 open FSharp.Data
 
+[<CustomComparison>]
 type Card =
     { id : int32
       age : int32
@@ -23,6 +26,15 @@ type Card =
       dogmaCondition1 : string
       dogmaCondition2 : string
       dogmaCondition3 : string }
+
+    interface IComparable with
+      member this.CompareTo other =
+          match other with
+          | :? Card as c -> (this :> IComparable<_>).CompareTo c
+          | _ -> -1
+
+    interface IComparable<Card> with
+      member this.CompareTo other = other.id.CompareTo this.id
 
 type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
