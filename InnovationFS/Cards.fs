@@ -53,38 +53,37 @@ let cardData = CardData.Load("Innovation.txt")
 
 let Cards =
     cardData.Rows
-    |> Array.ofSeq
-    |> Array.map (fun row ->
+    |> List.ofSeq
+    |> List.map (fun row ->
            let icons =
                [ (IconPosition.IconTop, row.Top)
                  (IconPosition.IconLeft, row.Left)
                  (IconPosition.IconMiddle, row.Middle)
                  (IconPosition.IconRight, row.Right) ]
                |> Map.ofList
-           { id = row.ID
-             age = row.Age
-             color = row.Color
-             title = row.Title
-             icons = icons
-             hexagon = row.``Hexagon (info only)``
-             dogmaIcon = row.``Dogma Icon``
-             dogmaCondition1 = row.``Dogma Condition 1``
-             dogmaCondition2 = row.``Dogma Condition 2``
-             dogmaCondition3 = row.``Dogma Condition 3`` })
 
-let CardsList = List.ofArray Cards
+           let card =
+               { id = row.ID
+                 age = row.Age
+                 color = row.Color
+                 title = row.Title
+                 icons = icons
+                 hexagon = row.``Hexagon (info only)``
+                 dogmaIcon = row.``Dogma Icon``
+                 dogmaCondition1 = row.``Dogma Condition 1``
+                 dogmaCondition2 = row.``Dogma Condition 2``
+                 dogmaCondition3 = row.``Dogma Condition 3`` }
 
-let getIdByName (name : string) : Option<Card> =
-    Cards
-    |> Array.where (fun s -> s.title = name)
-    |> Array.tryHead
+           (row.ID, card))
+    |> Map.ofList
 
-let getCardById (id : int32) : Card =
-    if (id < 0 || id > 105) then
-        invalidArg (nameof id) "card ID is out of range"
-    // Stupid starting array at zero.
-    // Maybe I should use a Dictionary.
-    Cards.[id - 1]
+let CardsByName =
+    Map.values Cards
+    |> Seq.map (fun card -> (card.title, card))
+    |> Map
+
+let getCardByName (name : string) : Option<Card> =
+    CardsByName |> Map.tryFind name
 
 let getHighestCard (cards : List<Card>) : Option<Card> =
     match cards with
@@ -98,7 +97,7 @@ let isHighestCard (id : int32) (cards : List<Card>) : bool =
     let max = getHighestCard cards
     match max with
     | None -> true // XXX is the card supposed to be in the list?
-    | Some c -> c.age = (getCardById id).age
+    | Some c -> c.age = (Cards.[id]).age
 
 let getLowestCard (cards : List<Card>) : Option<Card> =
     match cards with
@@ -112,4 +111,10 @@ let isLowestCard (id : int32) (cards : List<Card>) : bool =
     let min = getLowestCard cards
     match min with
     | None -> true // XXX is the card supposed to be in the list?
-    | Some c -> c.age = (getCardById id).age
+    | Some c -> c.age =Cards.[id].age
+
+let cardHasSymbol (id : Option<int32>) (symbol : string) : bool =
+    match id with
+    | None -> false
+    | Some c ->
+        Seq.contains symbol Cards[c].icons.Values
