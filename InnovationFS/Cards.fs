@@ -15,11 +15,35 @@ type IconPosition =
     | IconMiddle = 2
     | IconRight = 3
 
+type CardColor =
+    | Green
+    | Red
+    | Blue
+    | Yellow
+    | Purple
+
+    static member Parse(str : string) : CardColor =
+        match str.ToLowerInvariant() with
+        | "green" -> CardColor.Green
+        | "red" -> CardColor.Red
+        | "blue" -> CardColor.Blue
+        | "yellow" -> CardColor.Yellow
+        | "purple" -> CardColor.Purple
+        | _ -> invalidArg (nameof str) (sprintf "Invalid color: %s" str)
+
+    static member ToString(color : CardColor) : string =
+        match color with
+        | CardColor.Green -> "Green"
+        | CardColor.Red -> "Red"
+        | CardColor.Blue -> "Blue"
+        | CardColor.Yellow -> "Yellow"
+        | CardColor.Purple -> "Purple"
+
 [<CustomComparison; CustomEquality>]
 type Card =
     { id : int32
       age : int32
-      color : string
+      color : CardColor
       title : string
       icons : Map<IconPosition, string>
       hexagon : string
@@ -65,7 +89,7 @@ let Cards =
            let card =
                { id = row.ID
                  age = row.Age
-                 color = row.Color
+                 color = CardColor.Parse row.Color
                  title = row.Title
                  icons = icons
                  hexagon = row.``Hexagon (info only)``
