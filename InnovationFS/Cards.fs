@@ -6,9 +6,7 @@ module Cards
 //open Android.Runtime
 //open Android.Views
 //open Android.Widget
-
 open System
-
 open FSharp.Data
 
 [<CustomComparison>]
@@ -57,3 +55,45 @@ let Cards =
              dogmaCondition1 = row.``Dogma Condition 1``
              dogmaCondition2 = row.``Dogma Condition 2``
              dogmaCondition3 = row.``Dogma Condition 3`` })
+
+let CardsList = List.ofArray Cards
+
+let getIdByName (name : string) : Option<Card> =
+    Cards
+    |> Array.where (fun s -> s.title = name)
+    |> Array.tryHead
+
+let getCardById (id : int32) : Card =
+    if (id < 0 || id > 105) then
+        invalidArg (nameof id) "card ID is out of range"
+    // Stupid starting array at zero.
+    // Maybe I should use a Dictionary.
+    Cards.[ id - 1 ]
+
+let getHighestCard (cards : List<Card>) : Option<Card> =
+    match cards with
+    | [] -> None
+    | _ ->
+        cards
+        |> List.max
+        |> Some
+
+let isHighestCard (id : int32) (cards : List<Card>) : bool =
+    let max = getHighestCard cards
+    match max with
+    | None -> true // XXX is the card supposed to be in the list?
+    | Some c -> c.age = (getCardById id).age
+
+let getLowestCard (cards : List<Card>) : Option<Card> =
+    match cards with
+    | [] -> None
+    | _ ->
+        cards
+        |> List.min
+        |> Some
+
+let isLowestCard (id : int32) (cards : List<Card>) : bool =
+    let min = getLowestCard cards
+    match min with
+    | None -> true // XXX is the card supposed to be in the list?
+    | Some c -> c.age = (getCardById id).age
