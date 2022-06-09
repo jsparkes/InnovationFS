@@ -22,7 +22,7 @@ type CardColor =
     | Yellow
     | Purple
 
-    static member Parse(str : string) : CardColor =
+    static member Parse(str: string) : CardColor =
         match str.ToLowerInvariant() with
         | "green" -> CardColor.Green
         | "red" -> CardColor.Red
@@ -31,7 +31,7 @@ type CardColor =
         | "purple" -> CardColor.Purple
         | _ -> invalidArg (nameof str) (sprintf "Invalid color: %s" str)
 
-    static member ToString(color : CardColor) : string =
+    static member ToString(color: CardColor) : string =
         match color with
         | CardColor.Green -> "Green"
         | CardColor.Red -> "Red"
@@ -44,30 +44,28 @@ type CardColor =
 // let CardBackgrounds = Map.empty<CardColor, string>
 
 let CardBackgrounds =
-    [|
-      CardColor.Green
-      CardColor.Red
-      CardColor.Blue
-      CardColor.Yellow
-      CardColor.Purple
-    |]
-    |> Array.map (fun color -> 
-                    let name = CardColor.ToString(color)
-                    (color, $"imagers/{name.ToLowerInvariant()}.jpg"))
+    [| CardColor.Green
+       CardColor.Red
+       CardColor.Blue
+       CardColor.Yellow
+       CardColor.Purple |]
+    |> Array.map (fun color ->
+        let name = CardColor.ToString(color)
+        (color, $"imagers/{name.ToLowerInvariant()}.jpg"))
     |> Map.ofArray
 
 [<CustomComparison; CustomEquality>]
 type Card =
-    { id : int32
-      age : int32
-      color : CardColor
-      title : string
-      icons : Map<IconPosition, string>
-      hexagon : string
-      dogmaIcon : string
-      dogmaCondition1 : string
-      dogmaCondition2 : string
-      dogmaCondition3 : string }
+    { id: int32
+      age: int32
+      color: CardColor
+      title: string
+      icons: Map<IconPosition, string>
+      hexagon: string
+      dogmaIcon: string
+      dogmaCondition1: string
+      dogmaCondition2: string
+      dogmaCondition3: string }
 
     interface IComparable with
         member this.CompareTo other =
@@ -96,26 +94,26 @@ let Cards =
     cardData.Rows
     |> List.ofSeq
     |> List.map (fun row ->
-           let icons =
-               [ (IconPosition.IconTop, row.Top)
-                 (IconPosition.IconLeft, row.Left)
-                 (IconPosition.IconMiddle, row.Middle)
-                 (IconPosition.IconRight, row.Right) ]
-               |> Map.ofList
+        let icons =
+            [ (IconPosition.IconTop, row.Top)
+              (IconPosition.IconLeft, row.Left)
+              (IconPosition.IconMiddle, row.Middle)
+              (IconPosition.IconRight, row.Right) ]
+            |> Map.ofList
 
-           let card =
-               { id = row.ID
-                 age = row.Age
-                 color = CardColor.Parse row.Color
-                 title = row.Title
-                 icons = icons
-                 hexagon = row.``Hexagon (info only)``
-                 dogmaIcon = row.``Dogma Icon``
-                 dogmaCondition1 = row.``Dogma Condition 1``
-                 dogmaCondition2 = row.``Dogma Condition 2``
-                 dogmaCondition3 = row.``Dogma Condition 3`` }
+        let card =
+            { id = row.ID
+              age = row.Age
+              color = CardColor.Parse row.Color
+              title = row.Title
+              icons = icons
+              hexagon = row.``Hexagon (info only)``
+              dogmaIcon = row.``Dogma Icon``
+              dogmaCondition1 = row.``Dogma Condition 1``
+              dogmaCondition2 = row.``Dogma Condition 2``
+              dogmaCondition3 = row.``Dogma Condition 3`` }
 
-           (row.ID, card))
+        (row.ID, card))
     |> Map.ofList
 
 let CardsByName =
@@ -123,38 +121,33 @@ let CardsByName =
     |> Seq.map (fun card -> (card.title, card))
     |> Map
 
-let getCardByName (name : string) : Option<Card> =
-    CardsByName |> Map.tryFind name
+let getCardByName (name: string) : Option<Card> = CardsByName |> Map.tryFind name
 
-let getHighestCard (cards : List<Card>) : Option<Card> =
+let getHighestCard (cards: List<Card>) : Option<Card> =
     match cards with
     | [] -> None
-    | _ ->
-        cards
-        |> List.max
-        |> Some
+    | _ -> cards |> List.max |> Some
 
-let isHighestCard (id : int32) (cards : List<Card>) : bool =
+let isHighestCard (id: int32) (cards: List<Card>) : bool =
     let max = getHighestCard cards
+
     match max with
     | None -> true // XXX is the card supposed to be in the list?
     | Some c -> c.age = (Cards.[id]).age
 
-let getLowestCard (cards : List<Card>) : Option<Card> =
+let getLowestCard (cards: List<Card>) : Option<Card> =
     match cards with
     | [] -> None
-    | _ ->
-        cards
-        |> List.min
-        |> Some
+    | _ -> cards |> List.min |> Some
 
-let isLowestCard (id : int32) (cards : List<Card>) : bool =
+let isLowestCard (id: int32) (cards: List<Card>) : bool =
     let min = getLowestCard cards
+
     match min with
     | None -> true // XXX is the card supposed to be in the list?
     | Some c -> c.age = Cards.[id].age
 
-let cardHasSymbol (id : Option<int32>) (symbol : string) : bool =
+let cardHasSymbol (id: Option<int32>) (symbol: string) : bool =
     match id with
     | None -> false
-    | Some c -> Seq.contains symbol (Cards[ c ].icons.Values)
+    | Some c -> Seq.contains symbol (Cards[c].icons.Values)
