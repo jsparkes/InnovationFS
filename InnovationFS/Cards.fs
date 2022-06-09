@@ -39,6 +39,23 @@ type CardColor =
         | CardColor.Yellow -> "Yellow"
         | CardColor.Purple -> "Purple"
 
+// Initially color -> file name, will later be image values
+// once I figure out what format will be used.
+// let CardBackgrounds = Map.empty<CardColor, string>
+
+let CardBackgrounds =
+    [|
+      CardColor.Green
+      CardColor.Red
+      CardColor.Blue
+      CardColor.Yellow
+      CardColor.Purple
+    |]
+    |> Array.map (fun color -> 
+                    let name = CardColor.ToString(color)
+                    (color, $"imagers/{name.ToLowerInvariant()}.jpg"))
+    |> Map.ofArray
+
 [<CustomComparison; CustomEquality>]
 type Card =
     { id : int32
