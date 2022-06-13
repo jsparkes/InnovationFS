@@ -14,6 +14,33 @@
         <PackageReference Include="Fabulous.XamarinForms" Version="2.0.1" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="images\universeachievement.jpg" />
+      <Content Include="images\wonderachievement.jpg" />
+      <Content Include="images\worldachievement.jpg" />
+      <Content Include="images\x.jpg" />
+      <Content Include="images\x_small.jpg" />
+      <Content Include="images\yellow.jpg" />
+      <Content Include="images\blue.jpg" />
+      <Content Include="images\castle.jpg" />
+      <Content Include="images\castle_small.jpg" />
+      <Content Include="images\clock.jpg" />
+      <Content Include="images\clock_small.jpg" />
+      <Content Include="images\crown.jpg" />
+      <Content Include="images\crown_small.jpg" />
+      <Content Include="images\empireachievement.jpg" />
+      <Content Include="images\factory.jpg" />
+      <Content Include="images\factory_small.jpg" />
+      <Content Include="images\green.jpg" />
+      <Content Include="images\leaf.jpg" />
+      <Content Include="images\leaf_small.jpg" />
+      <Content Include="images\lightbulb.jpg" />
+      <Content Include="images\lightbulb_small.jpg" />
+      <Content Include="images\monumentachievement.jpg" />
+      <Content Include="images\purple.jpg" />
+      <Content Include="images\red.jpg" />
+      <Content Include="images\screenshot.jpg" />
+      <Content Include="images\screenshot0.png" />
+      <Content Include="images\title.jpg" />
       <Compile Include="Cards.fs" />
       <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
