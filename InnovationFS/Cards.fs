@@ -150,4 +150,4 @@ let isLowestCard (id: int32) (cards: List<Card>) : bool =
 let cardHasSymbol (id: Option<int32>) (symbol: string) : bool =
     match id with
     | None -> false
-    | Some c -> Seq.contains symbol (Cards[c].icons.Values)
+    | Some c -> Seq.contains symbol Cards.[c].icons.Values
