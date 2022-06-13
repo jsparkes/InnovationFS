@@ -41,6 +41,7 @@
       <Content Include="images\screenshot.jpg" />
       <Content Include="images\screenshot0.png" />
       <Content Include="images\title.jpg" />
+      <Compile Include="Images.fs" />
       <Compile Include="Cards.fs" />
       <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
