@@ -3,7 +3,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
         <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
-        <OutputType>WinExe</OutputType>
+        <OutputType>Library</OutputType>
         <ApplicationIcon>icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
@@ -14,12 +14,6 @@
         <PackageReference Include="Fabulous.XamarinForms" Version="2.0.3" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="images\universeachievement.jpg" />
-      <Content Include="images\wonderachievement.jpg" />
-      <Content Include="images\worldachievement.jpg" />
-      <Content Include="images\x.jpg" />
-      <Content Include="images\x_small.jpg" />
-      <Content Include="images\yellow.jpg" />
       <Content Include="images\blue.jpg" />
       <Content Include="images\castle.jpg" />
       <Content Include="images\castle_small.jpg" />
@@ -41,6 +35,12 @@
       <Content Include="images\screenshot.jpg" />
       <Content Include="images\screenshot0.png" />
       <Content Include="images\title.jpg" />
+      <Content Include="images\universeachievement.jpg" />
+      <Content Include="images\wonderachievement.jpg" />
+      <Content Include="images\worldachievement.jpg" />
+      <Content Include="images\x.jpg" />
+      <Content Include="images\x_small.jpg" />
+      <Content Include="images\yellow.jpg" />
       <Compile Include="Images.fs" />
       <Compile Include="Cards.fs" />
       <Compile Include="Board.fs" />
