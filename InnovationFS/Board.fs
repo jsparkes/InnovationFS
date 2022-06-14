@@ -72,5 +72,6 @@ type Hand() =
 // Per color stacks of cards, and the score and acheivement files
 type Tableau() =
     member val stacks = Map.empty<CardColor, Pile>
-//type Board =
-//    member val
+
+type Board() =
+    member val highlightedCard = Cards.[1]

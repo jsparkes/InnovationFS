@@ -8,10 +8,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="FSharp.Data" Version="4.2.8" />
-        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />
-        <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
         <PackageReference Include="FSharp.Core" Version="6.0.4" />
-        <PackageReference Include="Fabulous.XamarinForms" Version="2.0.3" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="images\blue.jpg" />
@@ -41,12 +38,10 @@
       <Content Include="images\x.jpg" />
       <Content Include="images\x_small.jpg" />
       <Content Include="images\yellow.jpg" />
-      <Compile Include="Images.fs" />
       <Compile Include="Cards.fs" />
       <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
       <Content Include="Innovation.txt" />
-      <Compile Include="App.fs" />
       <Compile Include="Main.fs" />
     </ItemGroup>
 </Project>
