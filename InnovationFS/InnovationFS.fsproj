@@ -12,6 +12,7 @@
     </ItemGroup>
     <ItemGroup>
       <Compile Include="Cards.fs" />
+      <Compile Include="Player.fs" />
       <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
       <Content Include="Innovation.txt" />
