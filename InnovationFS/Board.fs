@@ -1,7 +1,8 @@
 module Board
 
-open Cards
 open System
+open InnovationFS.Cards
+
 
 type SplayDirection =
     | Unsplayed

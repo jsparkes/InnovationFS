@@ -1,4 +1,4 @@
-module Cards
+module InnovationFS.Cards
 
 //open Android.App
 //open Android.Content
@@ -39,9 +39,20 @@ type CardColor =
         | CardColor.Yellow -> "Yellow"
         | CardColor.Purple -> "Purple"
 
-// Initially color -> file name, will later be image values
-// once I figure out what format will be used.
-// let CardBackgrounds = Map.empty<CardColor, string>
+let rng = new Random()
+
+let shuffle (org: _[]) =
+    let arr = Array.copy org
+    let max = (arr.Length - 1)
+
+    let randomSwap (arr: _[]) i =
+        let pos = rng.Next(max)
+        let tmp = arr.[pos]
+        arr.[pos] <- arr.[i]
+        arr.[i] <- tmp
+        arr
+
+    [| 0..max |] |> Array.fold randomSwap arr
 
 let CardBackgrounds =
     [| CardColor.Green
@@ -85,6 +96,9 @@ type Card =
         | _ -> false
 
     override this.GetHashCode() = this.id.GetHashCode()
+
+    member x.HasSymbol (symbol: string) : bool =
+        Seq.contains symbol x.icons.Values    
 
 type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
@@ -147,7 +161,57 @@ let isLowestCard (id: int32) (cards: List<Card>) : bool =
     | None -> true // XXX is the card supposed to be in the list?
     | Some c -> c.age = Cards.[id].age
 
-let cardHasSymbol (id: Option<int32>) (symbol: string) : bool =
-    match id with
-    | None -> false
-    | Some c -> Seq.contains symbol Cards.[c].icons.Values
+
+type SplayDirection =
+    | Unsplayed
+    | Left
+    | Right
+    | Up
+
+    static member ToString(dir: SplayDirection) : string =
+        match dir with
+        | Unsplayed -> "Unsplayed"
+        | Left -> "left"
+        | Right -> "Right"
+        | Up -> "Up"
+
+
+// A stack of cards.  Thw word "Stack" is overloaded...
+// Stored in a list top to bottom.
+type Pile() =
+    member val cards: List<Card> = List.empty with get, set
+    member val splayed = SplayDirection.Unsplayed with get, set
+
+    member this.Top() : Option<Card> =
+        match this.cards with
+        | [] -> None
+        | x :: xs -> Some x
+
+    member x.Add(card: Card) = x.cards <- card :: x.cards
+
+    member this.RemoveTop() : Option<Card> =
+        match this.cards with
+        | [] -> None
+        | x :: xs ->
+            this.cards <- xs
+            Some x
+
+    member x.Shuffle() : unit =
+        x.cards <- x.cards |> List.toArray |> shuffle |> Array.toList
+
+    member x.Tuck(card: Card) =
+        x.cards <- x.cards @ (List.singleton card)
+
+    member x.Splay(dir: SplayDirection) = x.splayed <- dir
+    member x.SplayDirection() : SplayDirection = x.splayed
+    member x.CanSplay() : bool = (List.length x.cards) > 1
+
+type ScorePile() =
+    member val cards = List.empty<Card> with get, set
+
+    member x.Add(card: Card) : Unit =
+        x.cards <- x.cards @ (List.singleton card)
+
+// RemoveByAge
+// RemoveLowest
+// RemoveHighest
