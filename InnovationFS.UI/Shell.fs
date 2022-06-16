@@ -18,7 +18,8 @@ module Shell =
 
     type State =
         /// store the child state in your main state
-        { aboutState: About.State; counterState: Counter.State;}
+        { aboutState: About.State
+          counterState: Counter.State }
 
     type Msg =
         | AboutMsg of About.Msg
@@ -27,45 +28,50 @@ module Shell =
     let init =
         let aboutState, aboutCmd = About.init
         let counterState = Counter.init
-        { aboutState = aboutState; counterState = counterState },
+
+        { aboutState = aboutState
+          counterState = counterState },
         /// If your children controls don't emit any commands
         /// in the init function, you can just return Cmd.none
         /// otherwise, you can use a batch operation on all of them
         /// you can add more init commands as you need
         Cmd.batch [ aboutCmd ]
 
-    let update (msg: Msg) (state: State): State * Cmd<_> =
+    let update (msg: Msg) (state: State) : State * Cmd<_> =
         match msg with
         | AboutMsg bpmsg ->
-            let aboutState, cmd =
-                About.update bpmsg state.aboutState
+            let aboutState, cmd = About.update bpmsg state.aboutState
+
             { state with aboutState = aboutState },
-            /// map the message to the kind of message 
+            /// map the message to the kind of message
             /// your child control needs to handle
             Cmd.map AboutMsg cmd
         | CounterMsg countermsg ->
-            let counterMsg =
-                Counter.update countermsg state.counterState
+            let counterMsg = Counter.update countermsg state.counterState
+
             { state with counterState = counterMsg },
-            /// map the message to the kind of message 
+            /// map the message to the kind of message
             /// your child control needs to handle
             Cmd.none
 
     let view (state: State) (dispatch) =
         DockPanel.create
-            [ DockPanel.children (Map.toList Images.Images |> List.map (fun (k,v) -> v))]
-                //[ TabControl.create
-                //    [ TabControl.tabStripPlacement Dock.Top
-                //      TabControl.viewItems
-                //          [ TabItem.create
-                //                [ TabItem.header "Counter Sample"
-                //                  TabItem.content (Counter.view state.counterState (CounterMsg >> dispatch)) ]
-                //            TabItem.create
-                //                [ TabItem.header "About"
-                //                  TabItem.content (About.view state.aboutState (AboutMsg >> dispatch)) ] ]
-                //          ]
-                //    ]
-                //]
+            [ DockPanel.children (
+                  Map.toList Images.Images
+                  |> List.map (fun (k, v) -> v)
+              ) ]
+    //[ TabControl.create
+    //    [ TabControl.tabStripPlacement Dock.Top
+    //      TabControl.viewItems
+    //          [ TabItem.create
+    //                [ TabItem.header "Counter Sample"
+    //                  TabItem.content (Counter.view state.counterState (CounterMsg >> dispatch)) ]
+    //            TabItem.create
+    //                [ TabItem.header "About"
+    //                  TabItem.content (About.view state.aboutState (AboutMsg >> dispatch)) ] ]
+    //          ]
+    //    ]
+    //]
 
     /// This is the main window of your application
     /// you can do all sort of useful things here like setting heights and widths
@@ -73,6 +79,7 @@ module Shell =
     /// Avalonia
     type MainWindow() as this =
         inherit HostWindow()
+
         do
             base.Title <- "Full App"
             base.Width <- 800.0
