@@ -97,8 +97,7 @@ type Card =
 
     override this.GetHashCode() = this.id.GetHashCode()
 
-    member x.HasSymbol (symbol: string) : bool =
-        Seq.contains symbol x.icons.Values    
+    member x.HasSymbol(symbol: string) : bool = Seq.contains symbol x.icons.Values
 
 type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
@@ -114,6 +113,8 @@ let Cards =
               (IconPosition.IconMiddle, row.Middle)
               (IconPosition.IconRight, row.Right) ]
             |> Map.ofList
+            // Convert missing icons into transparent ones
+            |> Map.map (fun k v -> if v = "" then "transparent.jpg" else v)
 
         let card =
             { id = row.ID
