@@ -138,6 +138,21 @@ let CardsByName =
     |> Seq.map (fun card -> (card.title, card))
     |> Map
 
+let EmptyCard =
+    { id = 0
+      age = 0
+      color = CardColor.Yellow
+      title = "Empty"
+      icons = Map.empty
+      hexagon = "Empty"
+      dogmaIcon = "transparent.jpg"
+      dogmaCondition1 = "Empty"
+      dogmaCondition2 = "Empty"
+      dogmaCondition3 = "Empty" }
+
+let isEmpty (card: Card) =
+    card.id = 0
+
 let getCardByName (name: string) : Option<Card> = CardsByName |> Map.tryFind name
 
 let getHighestCard (cards: List<Card>) : Option<Card> =
@@ -178,17 +193,16 @@ type SplayDirection =
         | Right -> "Right"
         | Up -> "Up"
 
-
 // A stack of cards.  Thw word "Stack" is overloaded...
 // Stored in a list top to bottom.
 type Pile() =
     member val cards: List<Card> = List.empty with get, set
     member val splayed = SplayDirection.Unsplayed with get, set
 
-    member this.Top() : Option<Card> =
+    member this.Top() : Card =
         match this.cards with
-        | [] -> None
-        | x :: xs -> Some x
+        | [] -> EmptyCard
+        | x :: xs -> x
 
     member x.Add(card: Card) = x.cards <- card :: x.cards
 
