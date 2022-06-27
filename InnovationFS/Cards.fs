@@ -213,6 +213,9 @@ type Pile() =
             this.cards <- xs
             Some x
 
+    member x.Remove(card: Card) =
+        x.cards <- List.filter (fun c -> c <> card) x.cards
+
     member x.Shuffle() : unit =
         x.cards <- x.cards |> List.toArray |> shuffle |> Array.toList
 
