@@ -39,6 +39,8 @@ type CardColor =
         | CardColor.Yellow -> "Yellow"
         | CardColor.Purple -> "Purple"
 
+    static member AllColors = [Green; Red; Blue; Yellow; Purple]
+
 let rng = new Random()
 
 let shuffle (org: _[]) =
