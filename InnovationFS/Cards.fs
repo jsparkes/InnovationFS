@@ -39,7 +39,7 @@ type CardColor =
         | CardColor.Yellow -> "Yellow"
         | CardColor.Purple -> "Purple"
 
-    static member AllColors = [Green; Red; Blue; Yellow; Purple]
+    static member AllColors = [ Green; Red; Blue; Yellow; Purple ]
 
 let rng = new Random()
 
@@ -150,8 +150,7 @@ let EmptyCard =
       dogmaCondition2 = "Empty"
       dogmaCondition3 = "Empty" }
 
-let isEmpty (card: Card) =
-    card.id = 0
+let isEmpty (card: Card) = card.id = 0
 
 let getCardByName (name: string) : Option<Card> = CardsByName |> Map.tryFind name
 
@@ -178,7 +177,6 @@ let isLowestCard (id: int32) (cards: List<Card>) : bool =
     match min with
     | None -> true // XXX is the card supposed to be in the list?
     | Some c -> c.age = Cards.[id].age
-
 
 type SplayDirection =
     | Unsplayed
