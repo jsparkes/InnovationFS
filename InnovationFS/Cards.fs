@@ -191,6 +191,8 @@ type SplayDirection =
         | Right -> "Right"
         | Up -> "Up"
 
+    static member SplayDirections = [ Unsplayed; Left; Right; Up ]
+
 // A stack of cards.  Thw word "Stack" is overloaded...
 // Stored in a list top to bottom.
 type Pile() =
