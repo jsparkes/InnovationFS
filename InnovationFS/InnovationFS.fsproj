@@ -13,9 +13,10 @@
     <ItemGroup>
       <Compile Include="Cards.fs" />
       <Compile Include="Player.fs" />
+      <Compile Include="Achievements.fs" />
       <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
       <Content Include="Innovation.txt" />
-      <Compile Include="Main.fs" />
+      <Compile Include="AI.fs" />
     </ItemGroup>
 </Project>

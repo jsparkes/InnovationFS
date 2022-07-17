@@ -3,12 +3,6 @@
 open InnovationFS.Cards
 open InnovationFS.Player
 
-type Achievement =
-    { index: int
-      title: string
-      by: Option<Player>
-      card: Option<Card> }
-
 type Achievements() =
     let mutable regular = List.empty<Achievement>
     let mutable special = List.empty<Achievement>
@@ -81,11 +75,26 @@ type Achievements() =
     member x.Regular = regular
     member x.Special = special
 
-    member x.AddAchievement(card: Card) =
+    member x.Count = regular.Length + special.Length
+
+    member x.GetSpecialByName(name: string) : Option<Achievement> =
+        special
+        |> List.tryFind (fun card -> card.title = name)
+
+    //member x.AddAchievement(card: Card) =
+    //    regular <-
+    //        regular
+    //        |> List.map (fun ach ->
+    //            if ach.index = card.age then
+    //                { ach with card = Some card }
+    //            else
+    //                ach)
+
+    member x.AddRegular (index: int) (card: Card) =
         regular <-
             regular
             |> List.map (fun ach ->
-                if ach.index = card.age then
+                if ach.index = index then
                     { ach with card = Some card }
                 else
                     ach)
@@ -93,6 +102,15 @@ type Achievements() =
     member x.AchieveRegular(index: int, player: Player) =
         regular <-
             regular
+            |> List.map (fun ach ->
+                if ach.index = index then
+                    { ach with by = Some player }
+                else
+                    ach)
+
+    member x.AchieveSpecial(index: int, player: Player) =
+        special <-
+            special
             |> List.map (fun ach ->
                 if ach.index = index then
                     { ach with by = Some player }

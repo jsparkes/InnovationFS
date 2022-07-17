@@ -6,14 +6,21 @@ module InnovationFS.Cards
 //open Android.Runtime
 //open Android.Views
 //open Android.Widget
+
 open System
 open FSharp.Data
 
 type IconPosition =
-    | IconTop = 0
-    | IconLeft = 1
-    | IconMiddle = 2
-    | IconRight = 3
+    | IconTop
+    | IconLeft
+    | IconMiddle
+    | IconRight
+
+    static member IconPositions =
+        [ IconTop
+          IconLeft
+          IconMiddle
+          IconRight ]
 
 type CardColor =
     | Green
@@ -69,12 +76,12 @@ let CardBackgrounds =
 
 [<CustomComparison; CustomEquality>]
 type Card =
-    { id: int32
+    { id: int32 // unique id
       age: int32
       color: CardColor
       title: string
-      icons: Map<IconPosition, string>
-      hexagon: string
+      icons: Map<IconPosition, string> // up to four icons
+      hexagon: string // ignored in play
       dogmaIcon: string
       dogmaCondition1: string
       dogmaCondition2: string
@@ -105,18 +112,21 @@ type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
 let cardData = CardData.Load("Innovation.txt")
 
+/// Convert missing icons into transparent ones
+let convertEmptyIcons (icons: Map<IconPosition, string>) : Map<IconPosition, string> =
+    icons
+    |> Map.map (fun k v -> if v = "" then "transparent.jpg" else v)
+
 let Cards =
     cardData.Rows
-    |> List.ofSeq
-    |> List.map (fun row ->
+    |> Seq.map (fun row ->
         let icons =
             [ (IconPosition.IconTop, row.Top)
               (IconPosition.IconLeft, row.Left)
               (IconPosition.IconMiddle, row.Middle)
               (IconPosition.IconRight, row.Right) ]
             |> Map.ofList
-            // Convert missing icons into transparent ones
-            |> Map.map (fun k v -> if v = "" then "transparent.jpg" else v)
+            |> convertEmptyIcons
 
         let card =
             { id = row.ID
@@ -131,19 +141,25 @@ let Cards =
               dogmaCondition3 = row.``Dogma Condition 3`` }
 
         (row.ID, card))
-    |> Map.ofList
+    |> Map.ofSeq
 
 let CardsByName =
     Map.values Cards
     |> Seq.map (fun card -> (card.title, card))
-    |> Map
+    |> Map.ofSeq
 
+// Placeholder to avoid use of Option<Card>.
 let EmptyCard =
     { id = 0
       age = 0
       color = CardColor.Yellow
       title = "Empty"
-      icons = Map.empty
+      icons =
+        [ (IconPosition.IconTop, "transparent.jpg")
+          (IconPosition.IconLeft, "transparent.jpg")
+          (IconPosition.IconMiddle, "transparent.jpg")
+          (IconPosition.IconRight, "transparent.jpg") ]
+        |> Map.ofList
       hexagon = "Empty"
       dogmaIcon = "transparent.jpg"
       dogmaCondition1 = "Empty"
@@ -153,6 +169,8 @@ let EmptyCard =
 let isEmpty (card: Card) = card.id = 0
 
 let getCardByName (name: string) : Option<Card> = CardsByName |> Map.tryFind name
+
+let getCardById (id: int) : Option<Card> = Cards |> Map.tryFind id
 
 let getHighestCard (cards: List<Card>) : Option<Card> =
     match cards with
@@ -179,6 +197,7 @@ let isLowestCard (id: int32) (cards: List<Card>) : bool =
     | Some c -> c.age = Cards.[id].age
 
 type SplayDirection =
+    // Value is score
     | Unsplayed
     | Left
     | Right
@@ -191,10 +210,18 @@ type SplayDirection =
         | Right -> "Right"
         | Up -> "Up"
 
+    static member Score(dir: SplayDirection) : int =
+        match dir with
+        | Unsplayed -> 0
+        | Left -> 10
+        | Right -> 25
+        | Up -> 40
+
     static member SplayDirections = [ Unsplayed; Left; Right; Up ]
 
 // A stack of cards.  Thw word "Stack" is overloaded...
 // Stored in a list top to bottom.
+// This represents a user's played cards and the draw piles of cards.
 type Pile() =
     member val cards: List<Card> = List.empty with get, set
     member val splayed = SplayDirection.Unsplayed with get, set
@@ -205,6 +232,9 @@ type Pile() =
         | x :: xs -> x
 
     member x.Add(card: Card) = x.cards <- card :: x.cards
+
+    member x.Add(cards: seq<Card>) =
+        cards |> Seq.iter (fun card -> x.Add card)
 
     member this.RemoveTop() : Option<Card> =
         match this.cards with
@@ -225,6 +255,9 @@ type Pile() =
     member x.Splay(dir: SplayDirection) = x.splayed <- dir
     member x.SplayDirection() : SplayDirection = x.splayed
     member x.CanSplay() : bool = (List.length x.cards) > 1
+
+    member x.TotalScore() : int =
+        x.cards |> List.sumBy (fun card -> card.age)
 
 type ScorePile() =
     member val cards = List.empty<Card> with get, set
