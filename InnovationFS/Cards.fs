@@ -54,7 +54,7 @@ let shuffle (org: _[]) =
     let arr = Array.copy org
     let max = (arr.Length - 1)
 
-    let randomSwap (arr: _[]) i =
+    let inline randomSwap (arr: _[]) i =
         let pos = rng.Next(max)
         let tmp = arr.[pos]
         arr.[pos] <- arr.[i]
