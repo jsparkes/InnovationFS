@@ -1,5 +1,8 @@
 namespace InnovationFS.UI
 
+open Cards
+open InnovationFS.Cards
+
 /// This is the main module of your application
 /// here you handle all of your child pages as well as their
 /// messages and their updates, useful to update multiple parts
@@ -55,11 +58,8 @@ module Shell =
             Cmd.none
 
     let view (state: State) (dispatch) =
-        DockPanel.create
-            [ DockPanel.children (
-                  Map.toList Images.Images
-                  |> List.map (fun (k, v) -> v)
-              ) ]
+        largeCard (Cards.[1])
+
     //[ TabControl.create
     //    [ TabControl.tabStripPlacement Dock.Top
     //      TabControl.viewItems
