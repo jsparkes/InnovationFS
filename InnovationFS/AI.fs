@@ -2,7 +2,6 @@
 
 open InnovationFS.Cards
 open InnovationFS.Player
-open InnovationFS.Board
 
 type Action =
     | Achieve
