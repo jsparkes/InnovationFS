@@ -2,6 +2,8 @@
 
 open InnovationFS.Cards
 open System
+open System.Text.Json
+open System.Text.Json.Serialization
 
 // Per player tableau
 // Per color stacks of cards, and the score and achievement files
@@ -297,14 +299,24 @@ and Board(players: List<Player>) =
         x.DrawPiles <- Map.add card.age drawPile x.DrawPiles
 
     // Can we serialize the game state with JSON?
-    member x.SerializeGame() : string = "JSON string"
+    member x.SerializeGame() : string =
+        let options =
+            new JsonSerializerOptions(
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                WriteIndented = true
+            )
 
-    static member DeserializeGame(json: string) : Board = new Board(List.empty)
+        JsonSerializer.Serialize(x, options)
 
-    static member LoadGame() =
+    static member DeserializeGame(json: string) : Board = JsonSerializer.Deserialize<Board>(json)
+
+    static member LoadGame() : Option<Board> =
         // Read save file
-        let contents = "{}"
-        Board.DeserializeGame(contents)
+        if System.IO.File.Exists("save.json") then
+            let contents = System.IO.File.ReadAllText("save.json")
+            Some(Board.DeserializeGame(contents))
+        else
+            None
 
     member x.SaveGame() =
         let contents = x.SerializeGame()
