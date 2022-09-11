@@ -17,9 +17,12 @@ let private logger = LogProvider.getLoggerByName "InnovationFS.UI.Images"
 let private loadImage (filename: string) : string * Bitmap =
     // TODO add error handling here
     if System.IO.File.Exists filename then
-        use bm = new Bitmap(filename)
-        let s = bm.Size
-        (System.IO.Path.GetFileName filename, bm)
+        let bm = new Bitmap(filename)
+        let fullname = System.IO.Path.GetFileName filename
+        // Strip off .jpg, or whatever the extension is.
+        // This is the iconname used internally
+        let basename = (fullname.Split ("."))[0]
+        (basename.ToLowerInvariant(), bm)
     else
         failwith $"File {filename} does not exist"
 
@@ -29,9 +32,9 @@ let Images : Map<string, Bitmap> =
         |> Array.map loadImage
         |> Map.ofArray
 
-    logger.debug (
-        Log.setMessage "Image map {map}"
-        >> Log.addParameter map
-    )
+    //logger.debug (
+    //    Log.setMessage "Image map {map}"
+    //    >> Log.addParameter map
+    //)
 
     map

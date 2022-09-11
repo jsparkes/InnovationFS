@@ -40,10 +40,10 @@ module Program =
 
         Log.Logger <- log
 
-        let x1 = AppBuilder.Configure<App>()
-        let x2 = x1.UsePlatformDetect()
-        let x3 = x2.UseSkia()
-        x3.StartWithClassicDesktopLifetime([| "InnovationFS"; "arg1"|])
+        let app = AppBuilder.Configure<App>()
+                    .UsePlatformDetect()
+                    .UseSkia()
+        app.StartWithClassicDesktopLifetime([| "InnovationFS"; "arg1"|])
 
         //AppBuilder
         //    .Configure<App>()

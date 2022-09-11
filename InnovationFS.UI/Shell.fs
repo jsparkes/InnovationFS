@@ -58,7 +58,12 @@ module Shell =
             Cmd.none
 
     let view (state: State) (dispatch) =
-        largeCard (Cards.[1])
+        StackPanel.create [
+            StackPanel.children [
+                largeCard (Cards.[47])
+                smallCard (Cards.[97])
+            ]
+        ]
 
     //[ TabControl.create
     //    [ TabControl.tabStripPlacement Dock.Top
@@ -84,8 +89,8 @@ module Shell =
             base.Title <- "Full App"
             base.Width <- 800.0
             base.Height <- 600.0
-            base.MinWidth <- 800.0
-            base.MinHeight <- 600.0
+            //base.MinWidth <- 800.0
+            //base.MinHeight <- 600.0
 
             //this.VisualRoot.VisualRoot.Renderer.DrawFps <- true
             //this.VisualRoot.VisualRoot.Renderer.DrawDirtyRects <- true
