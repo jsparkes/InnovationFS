@@ -7,14 +7,13 @@
         <ApplicationIcon>icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="FSharp.Data" Version="4.2.8" />
-        <PackageReference Include="FSharp.Core" Version="6.0.4" />
+        <PackageReference Include="FSharp.Data" Version="5.0.2" />
+        <PackageReference Include="FSharp.Core" Version="6.0.5" />
+        <PackageReference Include="System.Text.Json" Version="6.0.5" />
     </ItemGroup>
     <ItemGroup>
       <Compile Include="Cards.fs" />
       <Compile Include="Player.fs" />
-      <Compile Include="Achievements.fs" />
-      <Compile Include="Board.fs" />
       <Content Include="icon.ico" />
       <Content Include="Innovation.txt" />
       <Compile Include="AI.fs" />
