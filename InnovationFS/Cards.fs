@@ -112,12 +112,14 @@ type CardData = CsvProvider<"Innovation.txt", Separators="\t">
 
 let cardData = CardData.Load("Innovation.txt")
 
-/// Convert missing icons into transparent ones
-let convertEmptyIcons (icons: Map<IconPosition, string>) : Map<IconPosition, string> =
-    icons
-    |> Map.map (fun k v -> if v = "" then "transparent.jpg" else v)
 
 let Cards =
+
+    // Convert missing icons into transparent ones
+    let convertEmptyIcons (icons: Map<IconPosition, string>) : Map<IconPosition, string> =
+        icons
+        |> Map.map (fun k v -> if v = "" then "transparent.jpg" else v)
+    
     cardData.Rows
     |> Seq.map (fun row ->
         let icons =
