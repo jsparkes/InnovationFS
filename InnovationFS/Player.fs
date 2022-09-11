@@ -219,9 +219,21 @@ and Achievements() =
 
     member x.Count = regular.Length + special.Length
 
+    member x.GetByName(vals: List<Achievement>) (name: string) : Option<Achievement> =
+        vals |> List.tryFind (fun card -> card.title = name)
+
+    member x.ByName (name: string) : Achievement = 
+        let r = x.GetByName regular name
+        let s = x.GetByName special name
+        match r,s with 
+        | Some a, _ -> a
+        | None, Some a -> a
+        | None, None -> failwith $"Unable to find acheivement by name {name}"
+
+    member x.GetRegularByName(name: string) : Option<Achievement> =
+        x.GetByName special name
     member x.GetSpecialByName(name: string) : Option<Achievement> =
-        special
-        |> List.tryFind (fun card -> card.title = name)
+        x.GetByName special name
 
     //member x.AddAchievement(card: Card) =
     //    regular <-
