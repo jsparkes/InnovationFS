@@ -273,13 +273,13 @@ and Achievements() =
 
 and Board(players: List<Player>) =
     // Upper left corner display card
-    member val highlightedCard = Cards.[1] with get, set
+    member val HighlightedCard = Cards.[1] with get, set
     member val DrawPiles = Map.empty<int, Pile> with get, set
     member val Achievements = new Achievements()
     member val PlayerCount = List.length players
     member val Players = players
 
-    // Do we try keep the icon counts up to date, or do we
+    // Do we try keep the dogma icon counts up to date, or do we
     // recalculate after each round?  The first is more complicated
     // but but uses less CPU.  Picking the second for now, maybe
     // we can optimize into the first later, if necessary.  I
