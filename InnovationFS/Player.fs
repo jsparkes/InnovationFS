@@ -141,9 +141,11 @@ and Achievement =
     { index: int
       title: string
       by: Option<Player>
+      // Card used as a marker, it is removed from play.
       card: Option<Card> }
 
 and Achievements() =
+    // They are mutable to contain the players who achieve them
     let mutable regular = List.empty<Achievement>
     let mutable special = List.empty<Achievement>
 
