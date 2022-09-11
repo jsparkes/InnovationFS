@@ -297,14 +297,15 @@ and Board(players: List<Player>) =
         pile.Shuffle()
         x.DrawPiles <- Map.add i pile x.DrawPiles
 
-    /// Return the cards for a specific age
-    member x.CardsOfAge(age: int) : seq<Card> =
-        Cards.Values
-        |> Seq.filter (fun card -> card.age = age)
-
     member x.FillDrawPiles() =
-        [ 1..10 ]
-        |> Seq.iter (fun age -> x.FillDrawPile age (x.CardsOfAge age))
+        let allAges = [ 1..10 ]
+        // Should be done using groupBy?
+        let cardsOfAge(age: int) : seq<Card> =
+            Cards.Values
+            |> Seq.filter (fun card -> card.age = age)
+
+        allAges
+        |> Seq.iter (fun age -> x.FillDrawPile age (cardsOfAge age))
 
     member x.Return(card: Card) =
         let drawPile = x.DrawPiles[card.age]
