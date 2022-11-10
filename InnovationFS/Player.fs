@@ -2,8 +2,10 @@
 
 open InnovationFS.Cards
 open System
-open System.Text.Json
-open System.Text.Json.Serialization
+//open System.Text.Json
+//open System.Text.Json.Serialization
+open YamlDotNet.Serialization
+open YamlDotNet.Serialization.NamingConventions
 
 // Per player tableau
 // Per color stacks of cards, and the score and achievement files
@@ -219,21 +221,21 @@ and Achievements() =
 
     member x.Count = regular.Length + special.Length
 
-    member x.GetByName(vals: List<Achievement>) (name: string) : Option<Achievement> =
-        vals |> List.tryFind (fun card -> card.title = name)
+    member x.GetByName (vals: List<Achievement>) (name: string) : Option<Achievement> =
+        vals
+        |> List.tryFind (fun card -> card.title = name)
 
-    member x.ByName (name: string) : Achievement = 
+    member x.ByName(name: string) : Achievement =
         let r = x.GetByName regular name
         let s = x.GetByName special name
-        match r,s with 
+
+        match r, s with
         | Some a, _ -> a
         | None, Some a -> a
-        | None, None -> failwith $"Unable to find acheivement by name {name}"
+        | None, None -> failwith $"Unable to find achievement by name {name}"
 
-    member x.GetRegularByName(name: string) : Option<Achievement> =
-        x.GetByName special name
-    member x.GetSpecialByName(name: string) : Option<Achievement> =
-        x.GetByName special name
+    member x.GetRegularByName(name: string) : Option<Achievement> = x.GetByName regular name
+    member x.GetSpecialByName(name: string) : Option<Achievement> = x.GetByName special name
 
     //member x.AddAchievement(card: Card) =
     //    regular <-
@@ -300,7 +302,7 @@ and Board(players: List<Player>) =
     member x.FillDrawPiles() =
         let allAges = [ 1..10 ]
         // Should be done using groupBy?
-        let cardsOfAge(age: int) : seq<Card> =
+        let cardsOfAge (age: int) : seq<Card> =
             Cards.Values
             |> Seq.filter (fun card -> card.age = age)
 
@@ -314,25 +316,33 @@ and Board(players: List<Player>) =
         x.DrawPiles <- Map.add card.age drawPile x.DrawPiles
 
     // Can we serialize the game state with JSON?
+    //member x.SerializeGame() : string =
+    //    let options =
+    //        new JsonSerializerOptions(
+    //            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    //            WriteIndented = true
+    //        )
+    //    JsonSerializer.Serialize(x, options)
+
     member x.SerializeGame() : string =
-        let options =
-            new JsonSerializerOptions(
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                WriteIndented = true
-            )
+        let serializer = SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build()
+        // let serializer = SerializerBuilder().Build()
+        let yaml = serializer.Serialize(x)
+        yaml
 
-        JsonSerializer.Serialize(x, options)
-
-    static member DeserializeGame(json: string) : Board = JsonSerializer.Deserialize<Board>(json)
+    //static member DeserializeGame(json: string) : Board = JsonSerializer.Deserialize<Board>(json)
+    static member DeserializeGame(yaml: string) : Board = 
+        let deserializer = DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build()
+        deserializer.Deserialize<Board>(yaml)
 
     static member LoadGame() : Option<Board> =
         // Read save file
-        if System.IO.File.Exists("save.json") then
-            let contents = System.IO.File.ReadAllText("save.json")
+        if System.IO.File.Exists("save.yaml") then
+            let contents = System.IO.File.ReadAllText("save.yaml")
             Some(Board.DeserializeGame(contents))
         else
             None
 
     member x.SaveGame() =
         let contents = x.SerializeGame()
-        System.IO.File.WriteAllText("save.json", contents)
+        System.IO.File.WriteAllText("save.yaml", contents)
