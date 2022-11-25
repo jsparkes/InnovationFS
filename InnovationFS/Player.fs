@@ -34,6 +34,10 @@ type Tableau() =
         // Remove the empty card marker, if necessary
         stacks.[card.color].Remove(EmptyCard)
 
+    member x.Tuck(card: Card) = stacks.[card.color].Tuck(card)
+
+    member x.CanSplay(color: CardColor) = stacks.[color].CanSplay()
+
 type Hand(player: Player) =
     member val cards = Set.empty<Card> with get, set
     member val tuckedCount = 0 with get, set
@@ -43,22 +47,45 @@ type Hand(player: Player) =
     member x.ResetTuckCount() = x.tuckedCount <- 0
     member x.CountTuck() = x.tuckedCount <- x.tuckedCount + 1
 
-    member x.Score() =
-        x.cards
-        |> Set.toList
-        |> List.sumBy (fun card -> card.age)
+    member x.GetHighestAge() =
+        match x.cards.Count with
+        | 0 -> None
+        | _ ->
+            x.cards
+            |> Set.map (fun card -> card.age)
+            |> Set.maxElement
+            |> Some
 
-    member x.Tuck (card: Card) (pile: Pile) =
-        x.Remove card
-        pile.Tuck card
-        x.CountTuck()
+    member x.GetLowestAge() =
+        match x.cards.Count with
+        | 0 -> None
+        | _ ->
+            x.cards
+            |> Set.map (fun card -> card.age)
+            |> Set.minElement
+            |> Some
+
+    member x.Score() =
+        match x.cards.Count with
+        | 0 -> 0
+        | _ ->
+            x.cards
+            |> Set.toList
+            |> List.sumBy (fun card -> card.age)
+
+    member x.Tuck(card: Card, tableau: Tableau) =
+        if card <> EmptyCard then
+            x.Remove card
+            tableau.Tuck card
+            x.CountTuck()
 
     //if x.tuckedCount > 5 then
     //    player.Achieve(player.Board.Achievements.GetSpecialByName("Monument"))
 
     member x.Return(card: Card, board: Board) =
-        x.Remove card
-        board.Return card
+        if card <> EmptyCard then
+            x.Remove card
+            board.Return card
 
 and Player(board: Board, name: string) =
     member val Board = board
@@ -79,8 +106,8 @@ and Player(board: Board, name: string) =
         // Currently compue icons counts per turn
         ()
 
-    member x.Tuck(card: Card, pile: Pile) =
-        x.hand.Tuck card pile
+    member x.Tuck(card: Card) =
+        x.hand.Tuck(card, x.tableau)
         x.UpdateIconCounts()
 
     member x.CountIcon (icon: string) (counts: Map<string, int>) =
@@ -313,10 +340,11 @@ and Board(players: List<Player>) =
         |> Seq.iter (fun age -> x.FillDrawPile age (cardsOfAge age))
 
     member x.Return(card: Card) =
-        let drawPile = x.DrawPiles[card.age]
-        drawPile.Tuck card
-        // Not sure if this update is required, draw pile is internally mutable
-        x.DrawPiles <- Map.add card.age drawPile x.DrawPiles
+        if card <> EmptyCard then
+            let drawPile = x.DrawPiles[card.age]
+            drawPile.Tuck card
+            // Not sure if this update is required, draw pile is internally mutable
+            x.DrawPiles <- Map.add card.age drawPile x.DrawPiles
 
     // Can we serialize the game state with JSON?
     //member x.SerializeGame() : string =
