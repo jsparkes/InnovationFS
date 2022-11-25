@@ -356,14 +356,21 @@ and Board(players: List<Player>) =
     //    JsonSerializer.Serialize(x, options)
 
     member x.SerializeGame() : string =
-        let serializer = SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build()
+        let serializer =
+            SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build()
         // let serializer = SerializerBuilder().Build()
         let yaml = serializer.Serialize(x)
         yaml
 
     //static member DeserializeGame(json: string) : Board = JsonSerializer.Deserialize<Board>(json)
-    static member DeserializeGame(yaml: string) : Board = 
-        let deserializer = DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build()
+    static member DeserializeGame(yaml: string) : Board =
+        let deserializer =
+            DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build()
+
         deserializer.Deserialize<Board>(yaml)
 
     static member LoadGame() : Option<Board> =
