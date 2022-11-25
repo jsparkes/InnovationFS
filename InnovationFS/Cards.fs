@@ -267,6 +267,56 @@ type ScorePile() =
     member x.Add(card: Card) : Unit =
         x.cards <- x.cards @ (List.singleton card)
 
-// RemoveByAge
-// RemoveLowest
-// RemoveHighest
+    member x.Remove(card: Card) =
+        x.cards <- List.filter (fun c -> c <> card) x.cards
+
+    member x.GetHighestAge() =
+        match x.cards.Length with
+        | 0 -> 0
+        | _ ->
+            x.cards
+            |> List.map (fun card -> card.age)
+            |> List.max
+
+    member x.GetLowestAge() = 
+        match x.cards.Length with
+        | 0 -> 0
+        | _ ->
+            x.cards
+            |> List.map (fun card -> card.age)
+            |> List.min
+
+    // Any card of highest age will do
+    member x.RemoveHighestAge() =
+        let card =
+            match x.cards.Length with
+            | 0 -> EmptyCard
+            | _ -> 
+                x.cards
+                |> List.maxBy (fun c -> c.age)
+        x.Remove card
+        card
+
+    member x.RemoveLowestAge() =
+        let card =
+            match x.cards.Length with
+            | 0 -> EmptyCard
+            | _ -> 
+                x.cards
+                |> List.minBy (fun c -> c.age)
+        x.Remove card
+        card
+
+    member x.RemoveByAge(age: int) =
+        let card =
+            match x.cards.Length with
+            | 0 -> Some EmptyCard
+            | _ -> 
+                x.cards
+                |> List.filter (fun c -> c.age = age)
+                |> List.tryHead
+        match card with
+        | None -> EmptyCard
+        | Some c ->
+            x.Remove c
+            c
