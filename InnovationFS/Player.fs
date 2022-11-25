@@ -20,9 +20,9 @@ type Tableau() =
 
     member x.Stacks = stacks
 
-    // Return the highest card in the entire tableau.
+    // Return the highest top card in the tableau.
     // This may return EmptyCard!
-    member x.GetHighestCard() =
+    member x.GetHighestTopCard() =
         stacks
         |> Map.map (fun color pile -> pile.Top())
         |> Map.values
@@ -119,6 +119,9 @@ and Player(board: Board, name: string) =
 
         iconCounts
 
+    member x.GetHighestTopCard() = x.tableau.GetHighestTopCard()
+
+    member x.CanSplay(color: CardColor) = x.tableau.CanSplay(color)
 
     interface IComparable with
         member this.CompareTo other =

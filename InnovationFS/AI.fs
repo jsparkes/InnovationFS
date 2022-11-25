@@ -55,7 +55,7 @@ type AI(board: Board) =
 
         score <- score + (List.length player.achievements) * 10_000
 
-        let topCard = player.tableau.GetHighestCard()
+        let topCard = player.tableau.GetHighestTopCard()
         score <- score + (5 * topCard.age * topCard.age)
 
         // Award points for values of other top cards
