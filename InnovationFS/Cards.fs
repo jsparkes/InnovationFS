@@ -247,6 +247,8 @@ type Pile() =
 
     member x.Remove(card: Card) =
         x.cards <- List.filter (fun c -> c <> card) x.cards
+        if x.cards.Length <= 1 then
+            x.Splay Unsplayed
 
     member x.Shuffle() : unit =
         x.cards <- x.cards |> List.toArray |> shuffle |> Array.toList
