@@ -34,9 +34,15 @@ type Tableau() =
         // Remove the empty card marker, if necessary
         stacks.[card.color].Remove(EmptyCard)
 
+    member x.Remove (card: Card) =
+        stacks[card.color].Remove(card)
+    
     member x.Tuck(card: Card) = stacks.[card.color].Tuck(card)
 
     member x.CanSplay(color: CardColor) = stacks.[color].CanSplay()
+
+    member x.Splay (color: CardColor) (dir: SplayDirection) =
+        stacks[color].Splay(dir)
 
 type Hand(player: Player) =
     member val cards = Set.empty<Card> with get, set
